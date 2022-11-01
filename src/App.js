@@ -1,0 +1,124 @@
+import './App.css';
+import { useEffect, useState } from 'react';
+import NewCard from './components/NewCard';
+import uniqid from 'uniqid';
+
+function App() {
+
+  const [library, setLibrary] = useState([]);
+  const [read, setRead] = useState(0);
+
+
+  useEffect(() =>{
+    totalRead();
+    getLibrary();
+    console.log(read);
+  });
+
+  const getLibrary = () => {
+    return library;
+  }
+/* if(!localStorage.getItem('library')) {
+    setLibrary([]);
+    
+  } else {
+    setLibrary(JSON.parse(localStorage.library));
+  } */
+  
+
+var formTitle = document.getElementById('title');
+
+/* formTitle.addEventListener('input', () => {
+    formTitle.setCustomValidity('');
+    formTitle.checkValidity();
+  });
+
+formTitle.addEventListener('invalid', () =>{
+    if (formTitle.value === ''){
+        formTitle.setCustomValidity('Plaese enter the name of the Book.')
+    }
+}) */
+
+const openForm=()=>{
+    document.getElementById("addBook").style.display = "block";
+}
+
+const closeForm=()=>{
+    document.getElementById("addBook").style.display = "none";
+}
+
+const resetForm =()=> {
+  var formTitle = document.getElementById('title');
+  var formAuthor = document.getElementById('author');
+  var formPageCount = document.getElementById('pageCount');
+  var formRead = document.getElementById('read');
+    formTitle.value = "";
+    formAuthor.value = "";
+    formPageCount.value = "";
+    formRead.checked = false;
+}
+ 
+const addBook = () => {
+  var formTitle = document.getElementById('title');
+  var formAuthor = document.getElementById('author');
+  var formPageCount = document.getElementById('pageCount');
+  var formRead = document.getElementById('read');
+  setLibrary([...library, {title: formTitle.value, 
+    author: formAuthor.value, 
+    pageCount: formPageCount.value, 
+    read: formRead.checked,
+    id: uniqid()
+  }]);
+  console.log(library);
+  console.log(read);
+};
+
+console.log(library);
+
+const totalRead=()=>{
+    let br = 0;
+    for (let i=0; i<library.length; i++){
+        if (library[i].read === true){
+            br++
+        }
+    }
+    setRead(br)
+}
+
+
+  return (
+    <div className='body'>
+      <div className="topper">
+          <h1 className="pageHeading">My Library</h1>
+          <div id="library-count">
+              <p className="count-p">Books in Library: </p>
+              <p className="count-p" id="total-books">{library.length}</p>
+              <p className="count-p">Books Read: </p>
+              <p className="count-p" id="total-read">{read}</p>
+          </div>
+      </div>
+      <button type="button" onClick={openForm} className="openForm">Add Book</button>
+    
+      <NewCard library={ library }/>
+      <div id="addBook">
+          <form id="bookForm" >
+              <label htmlFor="title">Book Title</label>
+              <input type="text" id="title" required/>
+              <label htmlFor="author">Author of Book</label>
+              <input type="text" id="author" required pattern="[A-Za-z\s.]+"></input>
+              <label htmlFor="pageCount">Page Count</label>
+              <input type="number" id="pageCount" required></input>
+              <label htmlFor="read">Have you read this book?</label>
+              <input type="checkbox" id="read" name="read"></input>
+              <div className="buttons">
+                  <button className="formButtons" type="button" id="submit" onClick={addBook} >Submit</button>
+                  <button className="formButtons" type="button" id="reset" onClick={resetForm}>Clear</button>
+                  <button className="formButtons" type="button" onClick={closeForm}>Close Form</button>
+              </div>
+          </form>
+      </div>
+  </div>
+  );
+}
+
+export default App;
