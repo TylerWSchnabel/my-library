@@ -69,8 +69,8 @@ const addBook = () => {
     read: formRead.checked,
     id: uniqid()
   }]);
-  console.log(library);
-  console.log(read);
+  resetForm();
+  closeForm();
 };
 
 console.log(library);
@@ -85,6 +85,35 @@ const totalRead=()=>{
     setRead(br)
 }
 
+const removeBook = (item) => {
+  var data = [...library];
+  var index = data.findIndex(obj => obj.key === item.key);
+  data.splice(index, 1);
+  setLibrary(data);
+};
+
+/* const readChange  = (item) => {
+    if
+} */
+const changeBackground = (book) => {
+  let card = document.getElementById("checkbox"+book.key)
+  if (card.checked){
+    document.getElementById(book.id).style.backgroundColor = "#c3c1c1";
+  } else {
+    document.getElementById(book.id).style.backgroundColor = "aquamarine";
+  }
+}
+
+const checkBox = ( item ) => {
+  var data = [...library];
+  var index = data.findIndex(obj => obj.key === item.key);
+  if (data[index].read === true){
+    data[index].read = false;
+  } else if (data[index].read === false) {
+    data[index].read = true;
+  }
+  setLibrary(data);
+}
 
   return (
     <div className='body'>
@@ -99,7 +128,7 @@ const totalRead=()=>{
       </div>
       <button type="button" onClick={openForm} className="openForm">Add Book</button>
     
-      <NewCard library={ library }/>
+      <NewCard library={ library } remove={removeBook} checkBox = { checkBox } changeBackground = {changeBackground}/>
       <div id="addBook">
           <form id="bookForm" >
               <label htmlFor="title">Book Title</label>
