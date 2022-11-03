@@ -12,7 +12,6 @@ function App() {
   useEffect(() =>{
     totalRead();
     getLibrary();
-    console.log(read);
   });
 
   const getLibrary = () => {
@@ -24,20 +23,6 @@ function App() {
   } else {
     setLibrary(JSON.parse(localStorage.library));
   } */
-  
-
-var formTitle = document.getElementById('title');
-
-/* formTitle.addEventListener('input', () => {
-    formTitle.setCustomValidity('');
-    formTitle.checkValidity();
-  });
-
-formTitle.addEventListener('invalid', () =>{
-    if (formTitle.value === ''){
-        formTitle.setCustomValidity('Plaese enter the name of the Book.')
-    }
-}) */
 
 const openForm=()=>{
     document.getElementById("addBook").style.display = "block";
@@ -73,8 +58,6 @@ const addBook = () => {
   closeForm();
 };
 
-console.log(library);
-
 const totalRead=()=>{
     let br = 0;
     for (let i=0; i<library.length; i++){
@@ -92,9 +75,6 @@ const removeBook = (item) => {
   setLibrary(data);
 };
 
-/* const readChange  = (item) => {
-    if
-} */
 const changeBackground = (book) => {
   let card = document.getElementById("checkbox"+book.id)
   if (card.checked){

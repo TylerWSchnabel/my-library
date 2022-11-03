@@ -1,5 +1,6 @@
 import React from "react";
-
+import ReadCard from "./ReadCard";
+import NotReadCard from "./NotReadCard";
 
 const NewCard = (props) => {
 
@@ -7,19 +8,12 @@ const NewCard = (props) => {
 
     return <div id="bookGrid">
         {library.map((book) => {
-            return (
-            <div className="bookCard" id={book.id} key={book.id} onChange={()=>changeBackground(book)}>
-                <h1 className="cardTitle-label">Book Title: {book.title}</h1>
-                <h3 className="cardLabel">Author: {book.author}</h3>
-                <h3 className="cardLabel">Page Count: {book.pageCount}</h3>
-                <div className="haveRead">
-                    <h3 className="cardLabel">Have you read this book?</h3>
-                    <input type="checkbox" id={"checkbox"+book.id} className="readBox" onChange={()=>checkBox(book)} defaultChecked={book.read}></input>
-                </div>
-                <button onClick={()=>remove(book)}>Remove Book</button>
-                
-            </div>
-        )})}
+            if (book.read === true){
+                return <ReadCard book={book} remove={remove} checkBox = { checkBox } changeBackground = {changeBackground} key={book.id}/>
+            } else if (book.read === false){
+               return <NotReadCard book={book} remove={remove} checkBox = { checkBox } changeBackground = {changeBackground} key={book.id}/>
+            }
+        })}
 
     </div>
 
