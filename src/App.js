@@ -87,7 +87,7 @@ const totalRead=()=>{
 
 const removeBook = (item) => {
   var data = [...library];
-  var index = data.findIndex(obj => obj.key === item.key);
+  var index = data.findIndex(obj => obj.id === item.id);
   data.splice(index, 1);
   setLibrary(data);
 };
@@ -96,7 +96,7 @@ const removeBook = (item) => {
     if
 } */
 const changeBackground = (book) => {
-  let card = document.getElementById("checkbox"+book.key)
+  let card = document.getElementById("checkbox"+book.id)
   if (card.checked){
     document.getElementById(book.id).style.backgroundColor = "#c3c1c1";
   } else {
@@ -106,12 +106,13 @@ const changeBackground = (book) => {
 
 const checkBox = ( item ) => {
   var data = [...library];
-  var index = data.findIndex(obj => obj.key === item.key);
+  var index = data.findIndex(obj => obj.id === item.id);
   if (data[index].read === true){
     data[index].read = false;
   } else if (data[index].read === false) {
     data[index].read = true;
   }
+  changeBackground(item);
   setLibrary(data);
 }
 
