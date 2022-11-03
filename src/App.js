@@ -99,13 +99,14 @@ const checkBox = ( item ) => {
   return (
     <div className='body'>
       <div className="topper">
-          <h1 className="pageHeading">My Library</h1>
           <div id="library-count">
               <p className="count-p">Books in Library: </p>
               <p className="count-p" id="total-books">{library.length}</p>
               <p className="count-p">Books Read: </p>
               <p className="count-p" id="total-read">{read}</p>
           </div>
+          <h1 className="pageHeading">My Library</h1>
+          
       </div>
       <button type="button" onClick={openForm} className="openForm">Add Book</button>
     
