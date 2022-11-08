@@ -2,6 +2,39 @@ import './App.css';
 import { useEffect, useState } from 'react';
 import NewCard from './components/NewCard';
 import uniqid from 'uniqid';
+import profilePic from './components/files/StockAvatar.jpeg'
+
+import { initializeApp } from 'firebase/app';
+import {
+  getAuth,
+  GoogleAuthProvider,
+  signInWithPopup,
+  signOut,
+} from 'firebase/auth';
+import {
+  getFirestore,
+  collection,
+  addDoc,
+  getDoc,
+  query,
+  orderBy,
+  limit,
+  onSnapshot,
+  setDoc,
+  updateDoc,
+  doc,
+  serverTimestamp,
+} from 'firebase/firestore';
+import { getDatabase } from "firebase/database";
+
+
+
+// Import the functions you need from the SDKs you need
+import { getAnalytics } from "firebase/analytics";
+// TODO: Add SDKs for Firebase products that you want to use
+// https://firebase.google.com/docs/web/setup#available-libraries
+
+
 
 function App() {
 
@@ -12,17 +45,104 @@ function App() {
   useEffect(() =>{
     totalRead();
     getLibrary();
+    ifSignedIn();
   });
 
   const getLibrary = () => {
     return library;
   }
-/* if(!localStorage.getItem('library')) {
-    setLibrary([]);
-    
+//Firebase Functions
+
+
+// Your web app's Firebase configuration
+// For Firebase JS SDK v7.20.0 and later, measurementId is optional
+const firebaseConfig = {
+  apiKey: "AIzaSyDrnQQD5Avmfdy_Rn6_1XnO9BQYnecxEQ8",
+  authDomain: "library-1313.firebaseapp.com",
+  databaseURL: "https://library-1313-default-rtdb.firebaseio.com",
+  projectId: "library-1313",
+  storageBucket: "library-1313.appspot.com",
+  messagingSenderId: "686649559449",
+  appId: "1:686649559449:web:8325fa8c65bcd355376b08",
+  measurementId: "G-57LJQNHPC2"
+};
+
+// Initialize Firebase
+const app = initializeApp(firebaseConfig);
+
+/* const firebaseAppConfig = getFirebaseConfig();
+initializeApp(firebaseAppConfig); */
+
+async function signIn() {
+  // Sign in Firebase using popup auth and Google as the identity provider.
+  var provider = new GoogleAuthProvider();
+  await signInWithPopup(getAuth(), provider);
+  console.log('signed in')
+  console.log(getAuth().currentUser.uid);
+  ifSignedIn();
+}
+
+function signOutUser() {
+  // Sign out of Firebase.
+  signOut(getAuth()).then(()=>
+  ifSignedIn())
+}
+
+const ifSignedIn = () =>{
+  if (isUserSignedIn() === true){
+    document.getElementById('sign-in').style.display = 'none';
+    document.getElementById('sign-out').style.display = 'block';
+    document.getElementById('user-name').textContent = getUserName();
+    document.getElementById('user-pic').src = getProfilePicUrl();
+    document.getElementById('user-pic').style.display = 'block';
+    document.getElementById('user-name').style.display = 'block';
   } else {
-    setLibrary(JSON.parse(localStorage.library));
-  } */
+    document.getElementById('sign-out').style.display = 'none'
+    document.getElementById('sign-in').style.display = 'block'
+    document.getElementById('user-pic').src = profilePic;
+    document.getElementById('user-name').style.display = 'none';
+    console.log('signed-out  =  ' + isUserSignedIn());
+
+  }
+}
+
+
+// Returns the signed-in user's profile Pic URL.
+function getProfilePicUrl() {
+  return getAuth().currentUser.photoURL || '/images/profile_placeholder.png';
+}
+
+// Returns the signed-in user's display name.
+function getUserName() {
+  return getAuth().currentUser.displayName;
+}
+
+// Returns true if a user is signed-in.
+function isUserSignedIn() {
+  return !!getAuth().currentUser;
+}
+
+async function saveLibrary(book) {
+  // Add a new message entry to the Firebase database.
+  try {
+    await addDoc(collection(getFirestore(), 'library'), {
+      name: getUserName(),
+      userId: getAuth().currentUser.uid,
+      title: book.title, 
+      author: book.author, 
+      pageCount: book.pageCount, 
+      read: book.read,
+      timestamp: serverTimestamp(),
+      id: uniqid()
+  });
+  }
+  catch(error) {
+    console.error('Error writing new library to Firebase Database', error);
+  }
+}
+//End Firebase Functions
+
+
 
 const openForm=()=>{
     document.getElementById("addBook").style.display = "block";
@@ -49,11 +169,23 @@ const addBook = () => {
   var formPageCount = document.getElementById('pageCount');
   var formRead = document.getElementById('read');
   setLibrary([...library, {title: formTitle.value, 
-    author: formAuthor.value, 
+    author: formAuthor.value,
+    userId: getAuth().currentUser.uid,
     pageCount: formPageCount.value, 
     read: formRead.checked,
+    timestamp: serverTimestamp(),
     id: uniqid()
   }]);
+  let book = {title: formTitle.value, 
+    author: formAuthor.value, 
+    userId: getAuth().currentUser.uid,
+    pageCount: formPageCount.value, 
+    read: formRead.checked,
+    timestamp: serverTimestamp(),
+    id: uniqid()
+  }
+  saveLibrary(book);
+  console.log(collection(getFirestore(), 'library'));
   resetForm();
   closeForm();
 };
@@ -106,6 +238,19 @@ const checkBox = ( item ) => {
               <p className="count-p" id="total-read">{read}</p>
           </div>
           <h1 className="pageHeading">My Library</h1>
+          <div id="user-container">
+            <img id="user-pic" src={profilePic} alt='Profile' referrerPolicy="no-referrer"></img>
+            <div className='userLeft'>
+              <button className='sign-inBtn'  id="sign-out" onClick={signOutUser}>
+                Sign-out
+              </button>
+              <div hidden id="user-name"></div>
+              
+              <button id="sign-in" className='sign-inBtn' onClick={signIn}>
+              Sign-in with Google
+              </button>
+            </div>
+          </div>
           
       </div>
       <button type="button" onClick={openForm} className="openForm">Add Book</button>
