@@ -80,6 +80,7 @@ async function signIn() {
   console.log('signed in')
   console.log(getAuth().currentUser.uid);
   ifSignedIn();
+  loadLibrary();
 }
 
 function signOutUser() {
@@ -140,6 +141,27 @@ async function saveLibrary(book) {
     console.error('Error writing new library to Firebase Database', error);
   }
 }
+
+function loadLibrary() {
+  // Create the query to load the last 12 messages and listen for new ones.
+  const recentLibraryQuery = query(collection(getFirestore(), 'library: '+ getUserName()));
+  getLibrary();
+  // Start listening to the query.
+  onSnapshot(recentLibraryQuery, function(snapshot) {
+    const newLib = []
+    snapshot.docChanges().forEach(function(change) {
+        var book = change.doc.data();
+        newLib.push({title: book.title, 
+          author: book.author, 
+          pageCount: book.pageCount, 
+          read: book.read,
+          timestamp: serverTimestamp(),
+          id: uniqid()
+        });
+  });
+  setLibrary(newLib);
+})};
+
 //End Firebase Functions
 
 
