@@ -43,14 +43,14 @@ function App() {
 
 
   useEffect(() =>{
-    totalRead();
-    getLibrary();
     ifSignedIn();
+    totalRead();
   });
 
   const getLibrary = () => {
     return library;
   }
+  
 //Firebase Functions
 
 
@@ -77,8 +77,6 @@ async function signIn() {
   // Sign in Firebase using popup auth and Google as the identity provider.
   var provider = new GoogleAuthProvider();
   await signInWithPopup(getAuth(), provider);
-  console.log('signed in')
-  console.log(getAuth().currentUser.uid);
   ifSignedIn();
   loadLibrary();
 }
@@ -124,9 +122,10 @@ function isUserSignedIn() {
 }
 
 async function saveLibrary(book) {
+  console.log(library);
   // Add a new message entry to the Firebase database.
   try {
-    await addDoc(collection(getFirestore(), 'library'), {
+    await addDoc(collection(getFirestore(), 'library: '+ getUserName()), {
       name: getUserName(),
       userId: getAuth().currentUser.uid,
       title: book.title, 
@@ -145,10 +144,10 @@ async function saveLibrary(book) {
 function loadLibrary() {
   // Create the query to load the last 12 messages and listen for new ones.
   const recentLibraryQuery = query(collection(getFirestore(), 'library: '+ getUserName()));
-  getLibrary();
   // Start listening to the query.
+  const newLib = [];
   onSnapshot(recentLibraryQuery, function(snapshot) {
-    const newLib = []
+    
     snapshot.docChanges().forEach(function(change) {
         var book = change.doc.data();
         newLib.push({title: book.title, 
@@ -158,9 +157,13 @@ function loadLibrary() {
           timestamp: serverTimestamp(),
           id: uniqid()
         });
+        
   });
   setLibrary(newLib);
-})};
+}) 
+
+
+};
 
 //End Firebase Functions
 
@@ -186,18 +189,19 @@ const resetForm =()=> {
 }
  
 const addBook = () => {
+  console.log(library);
   var formTitle = document.getElementById('title');
   var formAuthor = document.getElementById('author');
   var formPageCount = document.getElementById('pageCount');
   var formRead = document.getElementById('read');
-  setLibrary([...library, {title: formTitle.value, 
+  /* setLibrary([...library, {title: formTitle.value, 
     author: formAuthor.value,
     userId: getAuth().currentUser.uid,
     pageCount: formPageCount.value, 
     read: formRead.checked,
     timestamp: serverTimestamp(),
     id: uniqid()
-  }]);
+  }]); */
   let book = {title: formTitle.value, 
     author: formAuthor.value, 
     userId: getAuth().currentUser.uid,
@@ -206,8 +210,11 @@ const addBook = () => {
     timestamp: serverTimestamp(),
     id: uniqid()
   }
+  
   saveLibrary(book);
-  console.log(collection(getFirestore(), 'library'));
+  console.log(library);
+  loadLibrary();
+  console.log(library);
   resetForm();
   closeForm();
 };

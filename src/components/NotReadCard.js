@@ -4,7 +4,7 @@ import React from "react";
 const NotReadCard = (props) => {
 
     const { book, remove, checkBox, changeBackground } = props;
-
+    
     return (
         <div className="bookCard" id={book.id} key={book.id} onChange={()=>changeBackground(book)} style={{backgroundColor: "aquamarine"}}>
             <h1 className="cardTitle-label">Book Title: {book.title}</h1>

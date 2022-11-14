@@ -5,7 +5,6 @@ import NotReadCard from "./NotReadCard";
 const NewCard = (props) => {
 
     const { library, remove, checkBox, changeBackground } = props;
-
     return <div id="bookGrid">
         {library.map((book) => {
             if (book.read === true){
