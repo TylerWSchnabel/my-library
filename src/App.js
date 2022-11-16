@@ -4,7 +4,7 @@ import NewCard from './components/NewCard';
 import uniqid from 'uniqid';
 import profilePic from './components/files/StockAvatar.jpeg'
 
-import { initializeApp } from 'firebase/app';
+import { initializeApp, firebase } from 'firebase/app';
 import {
   getAuth,
   GoogleAuthProvider,
@@ -15,22 +15,22 @@ import {
   getFirestore,
   collection,
   addDoc,
-  getDoc,
-  query,
-  orderBy,
-  limit,
-  onSnapshot,
   setDoc,
+  query,
+  onSnapshot,
+  serverTimestamp,
+  deleteDoc,
   updateDoc,
   doc,
-  serverTimestamp,
+  getDoc,
+  getDocs
 } from 'firebase/firestore';
-import { getDatabase } from "firebase/database";
+import 'firebase/firestore';
 
+// Required for side-effects
 
 
 // Import the functions you need from the SDKs you need
-import { getAnalytics } from "firebase/analytics";
 // TODO: Add SDKs for Firebase products that you want to use
 // https://firebase.google.com/docs/web/setup#available-libraries
 
@@ -46,13 +46,7 @@ function App() {
     ifSignedIn();
     totalRead();
   });
-
-  const getLibrary = () => {
-    return library;
-  }
-  
 //Firebase Functions
-
 
 // Your web app's Firebase configuration
 // For Firebase JS SDK v7.20.0 and later, measurementId is optional
@@ -69,6 +63,8 @@ const firebaseConfig = {
 
 // Initialize Firebase
 const app = initializeApp(firebaseConfig);
+
+const db = getFirestore(app);
 
 /* const firebaseAppConfig = getFirebaseConfig();
 initializeApp(firebaseAppConfig); */
@@ -125,8 +121,8 @@ async function saveLibrary(book) {
   console.log(library);
   // Add a new message entry to the Firebase database.
   try {
-    await addDoc(collection(getFirestore(), 'library: '+ getUserName()), {
-      name: getUserName(),
+    await setDoc(doc(db, 'library: '+ getUserName(), book.title), {
+      name: book.title,
       userId: getAuth().currentUser.uid,
       title: book.title, 
       author: book.author, 
@@ -194,14 +190,6 @@ const addBook = () => {
   var formAuthor = document.getElementById('author');
   var formPageCount = document.getElementById('pageCount');
   var formRead = document.getElementById('read');
-  /* setLibrary([...library, {title: formTitle.value, 
-    author: formAuthor.value,
-    userId: getAuth().currentUser.uid,
-    pageCount: formPageCount.value, 
-    read: formRead.checked,
-    timestamp: serverTimestamp(),
-    id: uniqid()
-  }]); */
   let book = {title: formTitle.value, 
     author: formAuthor.value, 
     userId: getAuth().currentUser.uid,
@@ -212,6 +200,7 @@ const addBook = () => {
   }
   
   saveLibrary(book);
+  
   console.log(library);
   loadLibrary();
   console.log(library);
@@ -230,11 +219,11 @@ const totalRead=()=>{
 }
 
 const removeBook = (item) => {
-  var data = [...library];
-  var index = data.findIndex(obj => obj.id === item.id);
-  data.splice(index, 1);
-  setLibrary(data);
-};
+  
+  deleteDoc(doc(db, 'library: '+ getUserName(), item.title));
+  console.log(doc(db, 'library: '+ getUserName(), item.title));
+  loadLibrary();
+}
 
 const changeBackground = (book) => {
   let card = document.getElementById("checkbox"+book.id)
@@ -246,7 +235,7 @@ const changeBackground = (book) => {
 }
 
 const checkBox = ( item ) => {
-  var data = [...library];
+  /* var data = [...library];
   var index = data.findIndex(obj => obj.id === item.id);
   if (data[index].read === true){
     data[index].read = false;
@@ -254,7 +243,15 @@ const checkBox = ( item ) => {
     data[index].read = true;
   }
   changeBackground(item);
-  setLibrary(data);
+  setLibrary(data); */
+  if (item.read === false){
+  updateDoc(doc(db, 'library: '+ getUserName(), item.title), {
+    read: true
+  })} else if (item.read === true) {
+    updateDoc(doc(db, 'library: '+ getUserName(), item.title), {
+      read: false
+  })}
+  loadLibrary();
 }
 
   return (
