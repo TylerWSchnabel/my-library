@@ -80,7 +80,10 @@ async function signIn() {
 function signOutUser() {
   // Sign out of Firebase.
   signOut(getAuth()).then(()=>
-  ifSignedIn())
+  ifSignedIn());
+  const newLib = [];
+  setLibrary(newLib);
+  loadLibrary();
 }
 
 const ifSignedIn = () =>{
@@ -279,8 +282,9 @@ const checkBox = ( item ) => {
           </div>
           
       </div>
-      <button type="button" onClick={openForm} className="openForm">Add Book</button>
-    
+      <div className='addBookbtn'>
+        <button type="button" onClick={openForm} className="openForm">Add Book</button>
+      </div>
       <NewCard library={ library } remove={removeBook} checkBox = { checkBox } changeBackground = {changeBackground}/>
       <div id="addBook">
           <form id="bookForm" >
