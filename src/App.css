@@ -5,6 +5,9 @@ body {
   height: 1vh;
   margin: 0%;
 }
+.body {
+  display: grid;
+}
 
 .pageHeading {
   text-align: center;
@@ -37,8 +40,10 @@ body {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(400px, 1fr));
   gap: 20px;
-  padding: 15px;
+  width: 90vw;
+  align-self: center;
   grid-auto-flow: row;
+  justify-self: center;
 }
 
 #empty {
@@ -76,12 +81,17 @@ body {
   border-radius: 10px;
   margin: 15px;
 }
-
+.addBookbtn{
+  display: grid;
+  width: 100vw;
+}
 .openForm {
   padding: 15px;
   background-color: coral;
   border-radius: 10px;
   margin: 15px;
+  width: 25vw;
+  justify-self: center;
 }
 
 .popContain {
@@ -90,8 +100,8 @@ body {
   background-color: black;
   position: sticky;
   bottom: 0%;
-
 }
+
 #addBook {
   position: sticky;
   left: 33%;
@@ -133,7 +143,7 @@ body {
 
 #user-container #user-pic {
   top: -3px;
-  display: inline-block;
+  display: grid;
   
   background-repeat: no-repeat;
   width: 40px;
@@ -142,19 +152,11 @@ body {
   border-radius: 20px;
   justify-self: end;
 }
-#user-container #user-name {
-  font-size: 16px;
-  line-height: 36px;
-  padding-right: 10px;
-  padding-left: 20px;
-}
+
 #image-form #submitImage {
   width: auto;
   padding: 0 6px 0 1px;
   min-width: 0;
-}
-#image-form #submitImage .material-icons {
-  top: -1px;
 }
 
 #user-container {
@@ -163,11 +165,24 @@ body {
   gap: 1rem;
   justify-self: center;
   align-self: center;
+  justify-items: center;
   padding-right: 2rem;
+}
+.sign-inBtn {
+  background-color: rgba(149,244,245,1);
+  border-radius: 8px;
+  padding: 2%;
+  font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
+  font-size: 1rem;
+  align-self: center;
+}
+#sign-in{
+  grid-row: 1 / span 2;
 }
 .userLeft {
   display: grid;
   grid-template-rows: 1fr 1fr;
+  align-items: center;
 }
 .material-icons {
   font-size: 36px;
@@ -183,4 +198,70 @@ body {
   height: 100%;
   padding-top: 0;
   padding-bottom: 0;
+}
+
+
+@media only screen and (max-width: 600px) {
+
+  .pageHeading {
+    font-size: 3vh;
+  }
+  .topper{
+    padding: 0%;
+    align-items: center;
+    justify-items: center;
+    height: 15vh;
+  }
+  #library-count{
+    height: fit-content;
+    padding: 0%;
+    padding-left: 2vw;
+    display: grid;
+    gap: 0;
+    border: 2px solid black;
+    border-radius: 10px;
+    justify-self: center;
+    background-color: white;
+    align-self: center;
+    grid-template-columns: 3fr 1fr;
+    
+  }
+  .count-p {
+    font-size: 1.5vh;
+    align-self: center;
+  }
+  #total-books {
+    justify-self: center;
+  }
+  #total-read {
+    justify-self: center;
+  }
+
+  #user-container{
+    padding-right: 0;
+    align-items: center;
+    margin-right: 2vw;
+    font-size: 1.2vh;
+  }
+  .userLeft {
+    font-size: 1.2vh;
+    align-content: center;
+  }
+  .sign-inBtn{
+    font-size: 1.5vh;
+    height: fit-content;
+    width: fit-content;
+    padding: 1vw;
+  }
+  #addBook {
+    width: fit-content;
+  }
+  .bookCard{
+    width: 80%;
+    align-self: center;
+  }
+  #bookGrid{
+    align-self: center;
+    justify-self: center;
+  }
 }
